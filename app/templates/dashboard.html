@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - Expense Tracker{% endblock %}
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <h2 class="mb-4"><i class="bi bi-speedometer2"></i> Dashboard</h2>
+
+    <!-- Summary Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card stat-card border-start border-primary border-4">
+                <div class="card-body">
+                    <h6 class="text-muted">Total Income</h6>
+                    <h3 class="text-primary">₹{{ "%.2f"|format(income_total) }}</h3>
+                    <small class="text-muted">This month</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stat-card border-start border-danger border-4">
+                <div class="card-body">
+                    <h6 class="text-muted">Total Expenses</h6>
+                    <h3 class="text-danger">₹{{ "%.2f"|format(expense_total) }}</h3>
+                    <small class="text-muted">This month</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stat-card border-start border-success border-4">
+                <div class="card-body">
+                    <h6 class="text-muted">Savings</h6>
+                    <h3 class="{{ 'text-success' if savings >= 0 else 'text-danger' }}">
+                        ₹{{ "%.2f"|format(savings) }}
+                    </h3>
+                    <small class="text-muted">This month</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Financial Insights -->
+    {% if insights %}
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <i class="bi bi-lightbulb"></i> Financial Insights
+        </div>
+        <div class="card-body">
+            <ul class="mb-0">
+                {% for insight in insights %}
+                <li class="mb-2">{{ insight }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <!-- Category Pie Chart -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-light">Expense by Category</div>
+                <div class="card-body" style="min-height: 280px;">
+                    {% if category_data %}
+                    <div style="position: relative; height: 250px;">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                    <script>
+                        new Chart(document.getElementById('categoryChart'), {
+                            type: 'pie',
+                            data: {
+                                labels: {{ category_data | map(attribute='name') | list | tojson }},
+                                datasets: [{
+                                    data: {{ category_data | map(attribute='amount') | list | tojson }},
+                                    backgroundColor: [
+                                        '#0d6efd','#dc3545','#198754','#ffc107','#6f42c1',
+                                        '#fd7e14','#20c997','#e83e8c','#6c757d'
+                                    ]
+                                }]
+                            },
+                            options: { responsive: true, maintainAspectRatio: true }
+                        });
+                    </script>
+                    {% else %}
+                    <p class="text-muted text-center py-4">No expenses this month yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Trend Line Chart -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-light">Monthly Expense Trend</div>
+                <div class="card-body" style="min-height: 280px;">
+                    {% if monthly_data %}
+                    <div style="position: relative; height: 250px;">
+                        <canvas id="monthlyChart"></canvas>
+                    </div>
+                    <script>
+                        new Chart(document.getElementById('monthlyChart'), {
+                            type: 'line',
+                            data: {
+                                labels: {{ monthly_data | map(attribute='month') | list | tojson }},
+                                datasets: [{
+                                    label: 'Expenses',
+                                    data: {{ monthly_data | map(attribute='amount') | list | tojson }},
+                                    borderColor: '#0d6efd',
+                                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                                    fill: true,
+                                    tension: 0.4
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                scales: {
+                                    y: { beginAtZero: true }
+                                }
+                            }
+                        });
+                    </script>
+                    {% else %}
+                    <p class="text-muted text-center py-4">No expense history yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Income vs Expense Bar Chart -->
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-header bg-light">Income vs Expense (Last 6 Months)</div>
+                <div class="card-body" style="min-height: 300px;">
+                    {% if income_vs_expense_data %}
+                    <div style="position: relative; height: 280px;">
+                        <canvas id="incomeVsExpenseChart"></canvas>
+                    </div>
+                    <script>
+                        new Chart(document.getElementById('incomeVsExpenseChart'), {
+                            type: 'bar',
+                            data: {
+                                labels: {{ income_vs_expense_data | map(attribute='month') | list | tojson }},
+                                datasets: [
+                                    {
+                                        label: 'Income',
+                                        data: {{ income_vs_expense_data | map(attribute='income') | list | tojson }},
+                                        backgroundColor: 'rgba(25, 135, 84, 0.7)',
+                                        borderColor: '#198754',
+                                        borderWidth: 1
+                                    },
+                                    {
+                                        label: 'Expense',
+                                        data: {{ income_vs_expense_data | map(attribute='expense') | list | tojson }},
+                                        backgroundColor: 'rgba(220, 53, 69, 0.7)',
+                                        borderColor: '#dc3545',
+                                        borderWidth: 1
+                                    },
+                                    {
+                                        label: 'Savings',
+                                        data: {{ income_vs_expense_data | map(attribute='savings') | list | tojson }},
+                                        backgroundColor: 'rgba(13, 110, 253, 0.7)',
+                                        borderColor: '#0d6efd',
+                                        borderWidth: 1
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                scales: {
+                                    y: { beginAtZero: true },
+                                    x: { stacked: false },
+                                    barPercentage: 0.7,
+                                    categoryPercentage: 0.8
+                                },
+                                plugins: {
+                                    legend: { position: 'top' }
+                                }
+                            }
+                        });
+                    </script>
+                    {% else %}
+                    <p class="text-muted text-center py-4">No data yet. Add income and expenses to see the comparison.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

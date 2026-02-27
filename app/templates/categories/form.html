@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Add Category - Expense Tracker{% endblock %}
+{% block content %}
+<div class="container">
+    <h2 class="mb-4"><i class="bi bi-plus-lg"></i> Add Category</h2>
+    <div class="card" style="max-width: 400px;">
+        <div class="card-body">
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="category_name" class="form-label">Category Name *</label>
+                    <input type="text" class="form-control" id="category_name" name="category_name" required
+                           minlength="2" placeholder="e.g. Food, Transport, Rent">
+                </div>
+                <button type="submit" class="btn btn-primary">Add Category</button>
+                <a href="{{ url_for('categories.list_categories') }}" class="btn btn-outline-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

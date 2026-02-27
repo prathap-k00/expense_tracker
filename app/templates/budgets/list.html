@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Budgets - Expense Tracker{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-piggy-bank"></i> Budgets</h2>
+        <a href="{{ url_for('budgets.add_budget') }}" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Set Budget
+        </a>
+    </div>
+    <div class="row">
+        {% for item in budget_data %}
+        <div class="col-md-6 col-lg-4 mb-3">
+            <div class="card {{ 'border-danger' if item.spent > item.budget.amount else '' }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][item.budget.month] }} {{ item.budget.year }}</h5>
+                    <p class="mb-1">Budget: ₹{{ "%.2f"|format(item.budget.amount) }}</p>
+                    <p class="mb-1">Spent: ₹{{ "%.2f"|format(item.spent) }}</p>
+                    <p class="mb-0 fw-bold {{ 'text-danger' if item.remaining < 0 else 'text-success' }}">
+                        {{ 'Over by' if item.remaining < 0 else 'Remaining' }}: ₹{{ "%.2f"|format(item.remaining|abs) }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12">
+            <div class="alert alert-info">No budgets set. <a href="{{ url_for('budgets.add_budget') }}">Set your first budget</a> to get overspending alerts.</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
