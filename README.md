@@ -108,6 +108,52 @@ This creates a demo user:
 5. **Financial Insights Logic**: Savings %, month-over-month comparison, budget alerts, category analysis
 6. **Scalability**: Blueprint modular structure, ready for AI/ML features (e.g., expense prediction)
 
+## Deploy on Render
+
+### Option 1: Using Dashboard (Recommended)
+
+1. **Push your code to GitHub** (create a repo and push the project).
+
+2. **Sign up at [render.com](https://render.com)** and connect your GitHub account.
+
+3. **Create a new Web Service**:
+   - Click **New +** → **Web Service**
+   - Connect your GitHub repo (`expense_tracker`)
+   - Select the repo and click **Connect**
+
+4. **Configure the service**:
+   | Field | Value |
+   |-------|-------|
+   | Name | expense-tracker (or any name) |
+   | Region | Oregon (US West) or nearest |
+   | Runtime | Python 3 |
+   | Build Command | `pip install -r requirements.txt` |
+   | Start Command | `gunicorn wsgi:app --bind 0.0.0.0:$PORT` |
+   | Instance Type | Free |
+
+5. **Environment Variables** (in Render Dashboard → Environment):
+   | Key | Value |
+   |----|-------|
+   | `SECRET_KEY` | Generate a random string (or use Render's "Generate" button) |
+   | `FLASK_ENV` | `production` |
+
+6. **Deploy** – Click **Create Web Service**. Render will build and deploy. Your app will be live at `https://your-app-name.onrender.com`.
+
+### Option 2: Using render.yaml (Blueprint)
+
+If you have `render.yaml` in your repo:
+
+1. Push code to GitHub.
+2. In Render Dashboard → **New +** → **Blueprint**.
+3. Connect the repo – Render will detect `render.yaml` and create the service.
+4. Add `SECRET_KEY` in Environment variables (Blueprint auto-generates it if configured).
+
+### Notes for Render
+
+- **Free tier**: App sleeps after 15 minutes of inactivity; first request may take ~30 seconds to wake.
+- **SQLite**: Works on Render, but data resets on redeploy. For persistent data, use [Render PostgreSQL](https://render.com/docs/databases) and set `DATABASE_URL`.
+- **Port**: Render sets `PORT` automatically; Gunicorn uses it by default.
+
 ## Environment Variables (Production)
 
 ```bash
