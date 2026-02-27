@@ -4,6 +4,7 @@ Flask app initialization with extensions and blueprints.
 Follows MVC architecture for maintainability.
 """
 
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -62,3 +63,7 @@ def create_app(config_name='default'):
         db.create_all()
     
     return app
+
+
+# App instance for Gunicorn: gunicorn app:app
+app = create_app(os.getenv('FLASK_ENV', 'production'))
