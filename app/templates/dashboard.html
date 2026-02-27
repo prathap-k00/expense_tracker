@@ -4,34 +4,34 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 {% endblock %}
 {% block content %}
-<div class="container-fluid">
-    <h2 class="mb-4"><i class="bi bi-speedometer2"></i> Dashboard</h2>
+<div class="container-fluid px-0 px-md-2">
+    <h2 class="mb-3 mb-md-4 fs-4 fs-md-3"><i class="bi bi-speedometer2"></i> Dashboard</h2>
 
     <!-- Summary Cards -->
-    <div class="row g-3 mb-4">
-        <div class="col-md-4">
+    <div class="row g-2 g-md-3 mb-4">
+        <div class="col-12 col-md-4">
             <div class="card stat-card border-start border-primary border-4">
-                <div class="card-body">
-                    <h6 class="text-muted">Total Income</h6>
-                    <h3 class="text-primary">₹{{ "%.2f"|format(income_total) }}</h3>
+                <div class="card-body py-3 py-md-4">
+                    <h6 class="text-muted small">Total Income</h6>
+                    <h3 class="text-primary fs-4 fs-md-3">₹{{ "%.2f"|format(income_total) }}</h3>
                     <small class="text-muted">This month</small>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-12 col-md-4">
             <div class="card stat-card border-start border-danger border-4">
-                <div class="card-body">
-                    <h6 class="text-muted">Total Expenses</h6>
-                    <h3 class="text-danger">₹{{ "%.2f"|format(expense_total) }}</h3>
+                <div class="card-body py-3 py-md-4">
+                    <h6 class="text-muted small">Total Expenses</h6>
+                    <h3 class="text-danger fs-4 fs-md-3">₹{{ "%.2f"|format(expense_total) }}</h3>
                     <small class="text-muted">This month</small>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card stat-card border-start border-success border-4">
-                <div class="card-body">
-                    <h6 class="text-muted">Savings</h6>
-                    <h3 class="{{ 'text-success' if savings >= 0 else 'text-danger' }}">
+                <div class="card-body py-3 py-md-4">
+                    <h6 class="text-muted small">Savings</h6>
+                    <h3 class="{{ 'text-success' if savings >= 0 else 'text-danger' }} fs-4 fs-md-3">
                         ₹{{ "%.2f"|format(savings) }}
                     </h3>
                     <small class="text-muted">This month</small>
@@ -58,12 +58,12 @@
 
     <div class="row">
         <!-- Category Pie Chart -->
-        <div class="col-lg-6 mb-4">
+        <div class="col-12 col-lg-6 mb-4">
             <div class="card h-100">
-                <div class="card-header bg-light">Expense by Category</div>
-                <div class="card-body" style="min-height: 280px;">
+                <div class="card-header bg-light py-2 py-md-3">Expense by Category</div>
+                <div class="card-body" style="min-height: 260px;">
                     {% if category_data %}
-                    <div style="position: relative; height: 250px;">
+                    <div style="position: relative; height: min(250px, 50vw);">
                         <canvas id="categoryChart"></canvas>
                     </div>
                     <script>
@@ -90,12 +90,12 @@
         </div>
 
         <!-- Monthly Trend Line Chart -->
-        <div class="col-lg-6 mb-4">
+        <div class="col-12 col-lg-6 mb-4">
             <div class="card h-100">
-                <div class="card-header bg-light">Monthly Expense Trend</div>
-                <div class="card-body" style="min-height: 280px;">
+                <div class="card-header bg-light py-2 py-md-3">Monthly Expense Trend</div>
+                <div class="card-body" style="min-height: 260px;">
                     {% if monthly_data %}
-                    <div style="position: relative; height: 250px;">
+                    <div style="position: relative; height: min(250px, 50vw);">
                         <canvas id="monthlyChart"></canvas>
                     </div>
                     <script>
@@ -133,10 +133,10 @@
     <div class="row">
         <div class="col-12 mb-4">
             <div class="card">
-                <div class="card-header bg-light">Income vs Expense (Last 6 Months)</div>
-                <div class="card-body" style="min-height: 300px;">
+                <div class="card-header bg-light py-2 py-md-3">Income vs Expense (Last 6 Months)</div>
+                <div class="card-body" style="min-height: 280px;">
                     {% if income_vs_expense_data %}
-                    <div style="position: relative; height: 280px;">
+                    <div style="position: relative; height: min(260px, 60vw);">
                         <canvas id="incomeVsExpenseChart"></canvas>
                     </div>
                     <script>
